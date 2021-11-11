@@ -24,6 +24,29 @@ async function run() {
         const userCollection = database.collection('users');
         const ordersCollection = database.collection('orders');
 
+          // Get products API
+          app.get('/products', async (req, res) => {
+            const cursor = productsCollection.find({});
+            const product = await cursor.toArray();
+            res.send(product);
+          });
+        
+    
+          // Get more products API
+          app.get('/moreProducts', async (req, res) => {
+            const cursor = moreProductsCollection.find({});
+            const product = await cursor.toArray();
+            res.send(product);
+          });
+        
+        // Post more product API
+        app.post('/moreProducts', async (req, res) => {
+            const product = req.body;
+            // console.log('Hit the post API', product);
+            const result = moreProductsCollection.insertOne(product);
+            res.json(result);
+        });
+
         // app.get('/appointments', async (req, res) => {
         //     const email = req.query.email;                                    // ---------
         //     const date = new Date(req.query.date).toLocaleDateString();       // ----------
@@ -46,7 +69,7 @@ async function run() {
         // Post orders API ////////
         app.post('/orders', async (req, res) => {
             const product = req.body;
-            console.log('Hit the post API', product);
+            // console.log('Hit the post API', product);
             const result = await ordersCollection.insertOne(product);
             res.json(result);
         });
