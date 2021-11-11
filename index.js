@@ -24,26 +24,43 @@ async function run() {
         const userCollection = database.collection('users');
         const ordersCollection = database.collection('orders');
 
-          // Get products API
-          app.get('/products', async (req, res) => {
+        // Get products API
+        app.get('/products', async (req, res) => {
             const cursor = productsCollection.find({});
             const product = await cursor.toArray();
             res.send(product);
-          });
-        
-    
-          // Get more products API
-          app.get('/moreProducts', async (req, res) => {
+        });
+
+
+        // Get more products API
+        app.get('/moreProducts', async (req, res) => {
             const cursor = moreProductsCollection.find({});
             const product = await cursor.toArray();
             res.send(product);
-          });
-        
+        });
+
         // Post more product API
         app.post('/moreProducts', async (req, res) => {
             const product = req.body;
             // console.log('Hit the post API', product);
             const result = moreProductsCollection.insertOne(product);
+            res.json(result);
+        });
+
+        // Get my booking API
+        app.get("/myBooking/:email", async (req, res) => {
+            const result = await ordersCollection.find({
+                email: req.params.email,
+            }).toArray();
+            res.send(result);
+        });
+
+        // Delete my booking API
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await ordersCollection.deleteOne(query);
+            // console.log('Delete success', result);
             res.json(result);
         });
 
