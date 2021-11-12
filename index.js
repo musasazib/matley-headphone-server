@@ -155,6 +155,20 @@ async function run() {
             res.json(result);
         });
 
+        // status update
+        app.put("/orders/:id", async (req, res) => {
+            const filter = { _id: ObjectId(req.params.id) };
+            console.log(req.params.id);
+            const result = await ordersCollection.updateOne(filter, {
+                $set: {
+                    status: req.body.status,
+                },
+            });
+            res.send(result);
+            // console.log(result);
+        });
+
+
     }
     finally {
         // await client.close();
