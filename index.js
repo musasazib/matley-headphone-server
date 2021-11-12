@@ -115,11 +115,27 @@ async function run() {
 
         });
 
+        // Get reviews API
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const review = await cursor.toArray();
+            res.send(review);
+        });
+
         // Post reviews API
         app.post('/reviews', async (req, res) => {
-            const product = req.body;
-            // console.log('Hit the post API', product);
-            const result = reviewsCollection.insertOne(product);
+            const review = req.body;
+            // console.log('Hit the post API', review);
+            const result = reviewsCollection.insertOne(review);
+            res.json(result);
+        });
+
+        // Delete product manege API
+        app.delete('/moreProducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await moreProductsCollection.deleteOne(query);
+            // console.log('Delete success', result);
             res.json(result);
         });
 
