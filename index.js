@@ -139,6 +139,22 @@ async function run() {
             res.json(result);
         });
 
+        // Get manage orders API
+        app.get('/orders', async (req, res) => {
+            const cursor = ordersCollection.find({});
+            const order = await cursor.toArray();
+            res.send(order);
+        });
+
+        // Delete my booking API
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await ordersCollection.deleteOne(query);
+            // console.log('Delete success', result);
+            res.json(result);
+        });
+
     }
     finally {
         // await client.close();
