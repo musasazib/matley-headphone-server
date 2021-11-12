@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient } = require('mongodb')
+const { MongoClient } = require('mongodb');
+const ObjectId = require("mongodb").ObjectId;
 
 const port = process.env.PORT || 5000;
 
@@ -64,25 +65,6 @@ async function run() {
             res.json(result);
         });
 
-        // app.get('/appointments', async (req, res) => {
-        //     const email = req.query.email;                                    // ---------
-        //     const date = new Date(req.query.date).toLocaleDateString();       // ----------
-        //     const query = { email: email, date: date };                        // filter user
-        //     // console.log(query);
-        //     const cursor = appointmentCollection.find(query);
-        //     const appointments = await cursor.toArray();
-        //     res.json(appointments);
-        // })
-
-        // app.post('/appointments', async (req, res) => {
-        //     const appointment = req.body;
-        //     // console.log(appointment);
-        //     // res.json({ message: 'hello' })
-        //     const result = await appointmentCollection.insertOne(appointment);
-        //     // console.log(result);
-        //     res.json(result);
-        // });
-
         // Post orders API ////////
         app.post('/orders', async (req, res) => {
             const product = req.body;
@@ -122,18 +104,12 @@ async function run() {
         app.put('/users/admin', async (req, res) => {
             const user = req.body;
             // console.log(user, 'admin')
-            const requester = req.decodedEmail;
-            if (requester) {
-                const requesterAccount = await userCollection.findOne({ email: requester });
-                if (requesterAccount.role === 'admin') {
-                    const filter = { email: user.email };
-                    const updateDoc = { $set: { role: 'admin' } };
-                    const result = await userCollection.updateOne(filter, updateDoc);
-                    res.json(result);
-                }
-            }
-            else {
-                res.status(403).json({ message: 'you do not have access to make admin' })
+            const requesterAccount = await userCollection.findOne({ email: requester });
+            if (requesterAccount.role === 'admin') {
+                const filter = { email: user.email };
+                const updateDoc = { $set: { role: 'admin' } };
+                const result = await userCollection.updateOne(filter, updateDoc);
+                res.json(result);
             }
         })
 
